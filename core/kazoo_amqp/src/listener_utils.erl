@@ -125,9 +125,9 @@ init_responder(Responder) ->
     try Responder:init() of
         _Init ->
             lager:debug("responder ~s init: ~p", [Responder, _Init])
-    catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
-            lager:debug("responder ~s crashed: ~s: ~p", [Responder, _E, _R]),
+   % catch_E:_R ->
+catch  Class:Reason:ST -> 
+            %ST = erlang:get_stacktrace(),
+            lager:debug("responder ~s crashed: ~s: ~p", [Responder, Class, Reason]),
             kz_util:log_stacktrace(ST)
     end.

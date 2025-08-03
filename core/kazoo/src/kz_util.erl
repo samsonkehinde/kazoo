@@ -79,9 +79,9 @@
 %% @end
 %%------------------------------------------------------------------------------
 -spec log_stacktrace() -> 'ok'.
-log_stacktrace() ->
-    ST = erlang:get_stacktrace(),
-    log_stacktrace(ST).
+%log_stacktrace() ->
+%    ST = erlang:get_stacktrace(),
+%    log_stacktrace(ST).
 
 -spec log_stacktrace(list()) -> ok.
 log_stacktrace(ST) ->
