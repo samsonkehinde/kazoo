@@ -4,7 +4,8 @@
 import sys, os, json
 
 if len(sys.argv) != 3:
-    print 'Usage: ' + sys.argv[0] + ' /path/to/schema.json /path/to/module.hrl'
+    # print 'Usage: ' + sys.argv[0] + ' /path/to/schema.json /path/to/module.hrl'
+    print(f'Usage: {sys.argv[0]} /path/to/schema.json /path/to/module.hrl')
     exit(0)
 
 def schema_to_header(schema, header_path):
