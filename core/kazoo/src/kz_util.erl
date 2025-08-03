@@ -87,10 +87,10 @@
 log_stacktrace(ST) ->
     log_stacktrace(ST, "", []).
 
-#-spec log_stacktrace(string(), list()) -> ok.
-#log_stacktrace(Fmt, Args) ->
-#    ST = erlang:get_stacktrace(),
-#    log_stacktrace(ST, Fmt, Args).
+%-spec log_stacktrace(string(), list()) -> ok.
+%log_stacktrace(Fmt, Args) ->
+%    ST = erlang:get_stacktrace(),
+%    log_stacktrace(ST, Fmt, Args).
 
 -spec log_stacktrace(list(), string(), list()) -> ok.
 log_stacktrace(ST, Fmt, Args) ->
