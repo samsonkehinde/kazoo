@@ -12,8 +12,9 @@ def schema_to_header(schema, header_path):
     with open(header_path, 'w') as header_file:
         (name, ext) = (os.path.splitext(os.path.basename(header_path)))
         header_name = name.upper()
-        keys = schema['properties'].keys()
-        keys.sort()
+        keys = sorted(schema['properties'].keys())
+        # keys = schema['properties'].keys()
+        # keys.sort()
         first, rest = keys[0], keys[1:]
 
         header_file.write("-ifndef("+header_name+"_HRL).\n")
