@@ -1017,8 +1017,8 @@ publish_api(PublishFun, ReqProps) ->
             lager:error("badarg error when publishing:"),
             kz_util:log_stacktrace(ST),
             {'error', 'badarg'};
-        'error':'function_clause' ->
-            ST = erlang:get_stacktrace(),
+        'error':'function_clause':ST ->
+            %ST = erlang:get_stacktrace(),
             lager:error("function clause error when publishing:"),
             kz_util:log_stacktrace(ST),
             lager:error("pub fun: ~p", [PublishFun]),
