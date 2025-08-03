@@ -78,7 +78,7 @@
 %% @doc Standardized way of logging the stack-trace.
 %% @end
 %%------------------------------------------------------------------------------
--spec log_stacktrace() -> 'ok'.
+%-spec log_stacktrace() -> 'ok'.
 %log_stacktrace() ->
 %    ST = erlang:get_stacktrace(),
 %    log_stacktrace(ST).

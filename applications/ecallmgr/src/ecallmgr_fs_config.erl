@@ -152,8 +152,8 @@ handle_config_req(Node, FetchId, ConfFile, FSData) ->
     kz_util:put_callid(FetchId),
     try process_config_req(Node, FetchId, ConfFile, FSData)
     catch
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        _E:_R:ST ->
+            %ST = erlang:get_stacktrace(),
             lager:info("failed to process config request for ~s: ~s: ~p", [ConfFile, _E, _R]),
             kz_util:log_stacktrace(ST),
             config_req_not_handled(Node, FetchId, ConfFile)

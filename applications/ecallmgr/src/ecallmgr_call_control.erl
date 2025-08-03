@@ -1086,8 +1086,8 @@ execute_control_request(Cmd, #state{node=Node
             send_error_resp(kz_json:new(), CallId, Cmd, Msg),
             Srv ! {'force_queue_advance', CallId, kz_json:new()},
             'ok';
-        'error':{'badmatch', {'error', ErrMsg}} ->
-            ST = erlang:get_stacktrace(),
+        'error':{'badmatch', {'error', ErrMsg}}:ST ->
+            %ST = erlang:get_stacktrace(),
             lager:debug("invalid command ~s: ~p", [Application, ErrMsg]),
             kz_util:log_stacktrace(ST),
             maybe_send_error_resp(kz_json:new(), CallId, Cmd),
@@ -1105,8 +1105,8 @@ execute_control_request(Cmd, #state{node=Node
             send_error_resp(kz_json:new(), CallId, Cmd, Msg),
             Srv ! {'force_queue_advance', CallId, kz_json:new()},
             'ok';
-        _A:_B ->
-            ST = erlang:get_stacktrace(),
+        _A:_B:ST ->
+            %ST = erlang:get_stacktrace(),
             lager:debug("exception (~s) while executing ~s: ~p", [_A, Application, _B]),
             kz_util:log_stacktrace(ST),
             send_error_resp(kz_json:new(), CallId, Cmd),

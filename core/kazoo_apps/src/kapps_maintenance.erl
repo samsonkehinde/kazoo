@@ -2182,8 +2182,8 @@ check_release() ->
         'throw':Error ->
             lager:error("check_release/0 failed: ~p", [Error]),
             init:stop(1);
-        _E:_R ->
-            ST = erlang:get_stacktrace(),
+        _E:_R:ST ->
+            %ST = erlang:get_stacktrace(),
             lager:error("check_release/0 crashed: ~s: ~p", [_E, _R]),
             kz_util:log_stacktrace(ST),
             init:stop(1)

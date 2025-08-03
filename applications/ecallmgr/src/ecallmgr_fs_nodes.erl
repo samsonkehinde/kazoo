@@ -661,8 +661,8 @@ maybe_start_node_handlers(#node{node=NodeName
             lager:warning("unexpected result trying to start ~s node handlers: ~-255p", [NodeName, _Else]),
             {'error', 'failed_starting_handlers'}
     catch
-        _:Reason ->
-            ST = erlang:get_stacktrace(),
+        _:Reason:ST ->
+            %ST = erlang:get_stacktrace(),
             lager:warning("exception starting node ~s handlers: ~p", [NodeName, Reason]),
             kz_util:log_stacktrace(ST),
             {'error', Reason}

@@ -535,9 +535,9 @@ send_request(CallId, Self, PublishFun, ReqProps)
     try PublishFun(Props) of
         'ok' -> 'ok'
     catch
-        _R:E ->
+        _R:E:ST ->
             lager:debug("failed to publish: ~s: ~p", [_R, E]),
-            kz_util:log_stacktrace(),
+            kz_util:log_stacktrace(ST),
             {'error', E}
     end.
 
@@ -1012,8 +1012,8 @@ publish_api(PublishFun, ReqProps) ->
             lager:error("publisher fun returned ~p instead of 'ok'", [Other]),
             {'error', Other}
     catch
-        'error':'badarg' ->
-            ST = erlang:get_stacktrace(),
+        'error':'badarg':ST ->
+            %ST = erlang:get_stacktrace(),
             lager:error("badarg error when publishing:"),
             kz_util:log_stacktrace(ST),
             {'error', 'badarg'};
