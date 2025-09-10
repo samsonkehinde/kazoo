@@ -140,7 +140,8 @@
 -type get_key() :: key() | path().
 
 -define(ENCODE_OPTIONS, ['error_on_undefined']).
--define(DECODE_OPTIONS, ['utf8_invalid_char_as_is']).
+%-define(DECODE_OPTIONS, ['utf8_invalid_char_as_is']).
+-define(DECODE_OPTIONS, []).
 
 -spec new() -> object().
 new() -> ?JSON_WRAPPER([]).
@@ -177,8 +178,7 @@ unsafe_decode(JSON, Options) ->
     end.
 
 -spec decode(iolist() | kz_term:ne_binary()) -> json_term().
-decode(Thing) when is_list(Thing)
-                   orelse is_binary(Thing) ->
+decode(Thing) when is_list(Thing); is_binary(Thing) ->
     decode(Thing, []).
 
 -spec decode(iolist() | kz_term:ne_binary(), list()) -> json_term().
