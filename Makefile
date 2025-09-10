@@ -150,8 +150,15 @@ dot_erlang_mk: $(DOT_ERLANG_MK)
 $(DOT_ERLANG_MK): $(ERLANG_MK)
 	@ERLANG_MK_COMMIT=$(ERLANG_MK_COMMIT) $(MAKE) -f $(ERLANG_MK) erlang.mk
 
+#$(ERLANG_MK):
+#	@wget 'https://raw.githubusercontent.com/ninenines/erlang.mk/2018.03.01/erlang.mk' -O $(ERLANG_MK)
+
 $(ERLANG_MK):
-	@wget 'https://raw.githubusercontent.com/ninenines/erlang.mk/2018.03.01/erlang.mk' -O $(ERLANG_MK)
+	@if [ ! -f "$(ERLANG_MK)" ]; then \
+		wget 'https://raw.githubusercontent.com/ninenines/erlang.mk/2018.03.01/erlang.mk' -O $(ERLANG_MK); \
+	else \
+		echo "$(ERLANG_MK) already exists, skipping download"; \
+	fi
 
 DEPS_HASH := $(shell md5sum make/deps.mk | cut -d' ' -f1)
 DEPS_HASH_FILE := make/.deps.mk.$(DEPS_HASH)

@@ -8,7 +8,7 @@ DEPS ?= amqp_client \
 	erlang_localtime \
 	erlazure \
 	erlcloud \
-	erlsom \
+	#erlsom \
 	erlydtl \
 	gen_smtp \
 	getopt \
@@ -52,6 +52,7 @@ dep_amqp_dist = git https://github.com/2600hz/erlang-amqp_dist.git faa54e490f308
 # used by apns4erl
 
 dep_couchbeam = git https://github.com/2600hz/erlang-couchbeam 86d946646ad9dee1dee305b15d5c59e4c8e60cc2 # latest commit SHA to 2600hz-kazoo5 branch
+dep_poolboy = git https://github.com/devinus/poolboy v1.5.0
 # adds _show querying
 
 ### https://github.com/benoitc/couchbeam/pull/158 - _list functions fix

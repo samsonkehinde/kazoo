@@ -139,7 +139,8 @@
 
 -type get_key() :: key() | path().
 
--define(ENCODE_OPTIONS, ['error_on_undefined']).
+%-define(ENCODE_OPTIONS, ['error_on_undefined']).
+-define(ENCODE_OPTIONS, []).
 %-define(DECODE_OPTIONS, ['utf8_invalid_char_as_is']).
 -define(DECODE_OPTIONS, []).
 
@@ -157,8 +158,7 @@ encode(JObj, Options) ->
     end.
 
 -spec unsafe_decode(iolist() | kz_term:ne_binary()) -> json_term().
-unsafe_decode(Thing) when is_list(Thing);
-                          is_binary(Thing) ->
+unsafe_decode(Thing) when is_list(Thing);is_binary(Thing) ->
     unsafe_decode(Thing, []).
 
 -spec unsafe_decode(iolist() | kz_term:ne_binary(), list()) -> json_term().
@@ -179,6 +179,7 @@ unsafe_decode(JSON, Options) ->
 
 -spec decode(iolist() | kz_term:ne_binary()) -> json_term().
 decode(Thing) when is_list(Thing); is_binary(Thing) ->
+    lager:notice("Attempting to decode: ~p", [Thing]),
     decode(Thing, []).
 
 -spec decode(iolist() | kz_term:ne_binary(), list()) -> json_term().
