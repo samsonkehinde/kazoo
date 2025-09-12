@@ -1,6 +1,7 @@
 #!/bin/bash -e
 COMMAND=${1:-"console"}
 
+NODE_NAME=${NODE_NAME:-kazoo}
 COUCHDB=${COUCHDB:-couchdb}
 COUCH_USR=${COUCH_USR:-admin}
 COUCH_PWD=${COUCH_PWD:-admin}
@@ -23,6 +24,5 @@ export KAZOO_APPS=$KAZOO_APPS
 export RELX_REPLACE_OS_VARS=true
 export KZname="-name $KAZOO_NODE"
 
-cd kazoo
 source ~/.bashrc
-exec bin/kazoo $COMMAND $*
+exec _rel/kazoo/bin/kazoo $COMMAND $*

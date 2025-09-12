@@ -142,10 +142,13 @@ get_zones() ->
 -spec get_from_zone(atom()) -> kz_term:proplist().
 get_from_zone(ZoneName) ->
     Zones = get_zones(),
+    lager:info("Zones: ~p",[Zones]),
     Props = dict:to_list(get_from_zone(ZoneName, Zones, dict:new())),
-
+    lager:info("Props: ~p",[Props]),
     case props:get_value('local', Props, []) of
-        [] -> [{'local', kz_config:get(<<"amqp">>, <<"uri">>, [?DEFAULT_AMQP_URI])} | Props];
+        [] -> 
+		lager:debug("Could not get local props"),
+		[{'local', kz_config:get(<<"amqp">>, <<"uri">>, [?DEFAULT_AMQP_URI])} | Props];
         _Else -> Props
     end.
 
