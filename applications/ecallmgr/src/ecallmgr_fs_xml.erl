@@ -924,12 +924,7 @@ section_el(Name, Content) ->
 section_el(Name, Desc, #xmlElement{}=Content) ->
     section_el(Name, Desc, [Content]);
 section_el(Name, Desc, Content) ->
-    #xmlElement{name='section'
-               ,attributes=[xml_attrib('name', Name)
-                           ,xml_attrib('description', Desc)
-                           ]
-               ,content=Content
-               }.
+    #xmlElement{name='section', attributes=[xml_attrib('name', Name), xml_attrib('description', Desc)],content=Content}.
 
 -spec domain_el(kz_types:xml_attrib_value(), kz_types:xml_el() | kz_types:xml_els()) -> kz_types:xml_el().
 domain_el(Name, Child) when not is_list(Child) ->

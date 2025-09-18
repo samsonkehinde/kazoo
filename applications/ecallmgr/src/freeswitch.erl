@@ -94,7 +94,8 @@ bind(Node, Type) -> ?FS_MODULE:bind(Node, Type).
 bind(Node, Type, Timeout) -> ?FS_MODULE:bind(Node, Type, Timeout).
 
 -spec fetch_reply(atom(), binary(), atom() | binary(), binary() | string()) -> 'ok'.
-fetch_reply(Node, FetchID, Section, Reply) -> ?FS_MODULE:fetch_reply(Node, FetchID, Section, Reply).
+fetch_reply(Node, FetchID, Section, Reply) -> 
+        ?FS_MODULE:fetch_reply(Node, FetchID, Section, Reply).
 
 -spec fetch_reply(atom(), binary(), atom() | binary(), binary() | string(), pos_integer() | 'infinity') ->
           'ok' | {'error', 'baduuid'}.

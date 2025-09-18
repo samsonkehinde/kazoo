@@ -93,16 +93,14 @@ handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID
     _ = kz_util:spawn(fun handle_config_req/4, [Node, ID, Conf, 'undefined']),
     {'noreply', State};
 handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID, ['undefined' | Data]}, #state{node=Node}=State) ->
+    lager:debug("fetch configuration request from ~s: ~s, conf: ~s~nData: ~p", [Node, ID, Conf, Data]),
+    _ = kz_util:spawn(fun handle_config_req/4, [Node, ID, Conf, Data]),
+    {'noreply', State};
+handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID, [UUID | Data]}, #state{node=Node}=State) when is_binary(UUID) ->
     lager:debug("fetch configuration request from ~s: ~s", [Node, ID]),
     _ = kz_util:spawn(fun handle_config_req/4, [Node, ID, Conf, Data]),
     {'noreply', State};
-handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID, [UUID | Data]}, #state{node=Node}=State)
-  when is_binary(UUID) ->
-    lager:debug("fetch configuration request from ~s: ~s", [Node, ID]),
-    _ = kz_util:spawn(fun handle_config_req/4, [Node, ID, Conf, Data]),
-    {'noreply', State};
-handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID, Data}, #state{node=Node}=State)
-  when is_list(Data) ->
+handle_info({'fetch', 'configuration', <<"configuration">>, <<"name">>, Conf, ID, Data}, #state{node=Node}=State) when is_list(Data) ->
     lager:debug("fetch configuration request from ~s: ~s", [Node, ID]),
     _ = kz_util:spawn(fun handle_config_req/4, [Node, ID, Conf, Data]),
     {'noreply', State};
@@ -111,6 +109,7 @@ handle_info({_Fetch, _Section, _Something, _Key, _Value, ID, _Data}, #state{node
     {'ok', Resp} = ecallmgr_fs_xml:not_found(),
     _ = freeswitch:fetch_reply(Node, ID, 'configuration', iolist_to_binary(Resp)),
     {'noreply', State};
+
 handle_info({'EXIT', _, 'noconnection'}, State) ->
     {stop, {'shutdown', 'noconnection'}, State};
 handle_info({'EXIT', _, Reason}, State) ->
@@ -178,16 +177,21 @@ process_config_req(Node, Id, <<"kazoo.conf">>, Data) ->
     lager:debug("received configuration request for kazoo configuration ~p , ~p", [Node, Id]),
     fetch_mod_kazoo_config(Node, Id, kzd_freeswitch:event_name(Data), Data);
 process_config_req(Node, Id, Conf, Data) ->
+    lager:debug("Dont know how to process ~s locally, looking for someone to handle this", [Conf]),
     case kazoo_bindings:map(<<"freeswitch.config.", Conf/binary>>, [Node, Id, Conf, Data]) of
         [] -> config_req_not_handled(Node, Id, Conf);
-        _  -> 'ok'
+        _  -> 
+		lager:debug("~s delivered to an external handler",[Conf]),
+		'ok'
     end.
 
 -spec config_req_not_handled(atom(), kz_term:ne_binary(), kz_term:ne_binary()) -> fs_sendmsg_ret().
 config_req_not_handled(Node, FetchId, Conf) ->
+    lager:debug("Unable to handle ~s, sending empty response",[Conf]),
     {'ok', NotHandled} = ecallmgr_fs_xml:not_found(),
-    lager:debug("ignoring conf ~s: ~s", [Conf, FetchId]),
-    freeswitch:fetch_reply(Node, FetchId, 'configuration', iolist_to_binary(NotHandled)).
+    Res = iolist_to_binary(NotHandled),
+    lager:debug("Sending back an empty response to conf request ~s with id: ~s~nResponse: ~s", [Conf, FetchId, Res]),
+    freeswitch:fetch_reply(Node, FetchId, 'configuration', Res).
 
 -spec generate_acl_xml(kz_json:object()) -> kz_term:ne_binary().
 generate_acl_xml(SysconfResp) ->

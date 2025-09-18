@@ -202,6 +202,7 @@ get_expires(Props) ->
 get_interface_list(Node) ->
     case freeswitch:api(Node, 'sofia', "status") of
         {'ok', Response} ->
+            lager:info("Status Response: ~p", [Response]),
             R = binary:replace(Response, <<" ">>, <<>>, ['global']),
             Lines = binary:split(R, <<"\n">>, ['global']),
             [KV || Line <- Lines,
