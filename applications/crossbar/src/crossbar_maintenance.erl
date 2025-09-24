@@ -1159,7 +1159,9 @@ read_image(File) ->
           {'ok', kz_json:object()} |
           {'invalid_data', kz_term:proplist()}.
 find_metadata(AppPath) ->
-    {'ok', Bin} = file:read_file(filename:join([AppPath, <<"metadata">>, <<"app.json">>])),
+    File = filename:join([AppPath, <<"metadata">>, <<"app.json">>]),
+    io:format("File: ~s~n", [File]),
+    {'ok', Bin} = file:read_file(File),
     JSON = kz_json:decode(Bin),
     case kz_json_schema:validate(<<"app">>, kz_doc:public_fields(JSON)) of
         {'ok', _} -> {'ok', JSON};

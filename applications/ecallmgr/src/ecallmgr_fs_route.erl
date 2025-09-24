@@ -127,17 +127,18 @@ handle_info({'fetch', Section, _Tag, _Key, _Value, FSId, [CallId | FSData]}
                   }=State
            ) ->
     lager:info("fetch request ~s started", [FSId]),
-    Props = props:filter_undefined([{<<"Switch-URL">>, SwitchURL}
-                                   ,{<<"Switch-URI">>, SwitchURI}
-                                   ,{<<"Switch-Nodename">>, kz_term:to_binary(Node)}
-                                   ])
-        ++ FSData,
+    Props = props:filter_undefined([{<<"Switch-URL">>, SwitchURL},{<<"Switch-URI">>, SwitchURI}
+    ,{<<"Switch-Nodename">>, kz_term:to_binary(Node)}]) ++ FSData,
+
     kz_util:spawn(fun handle_fetch/5, [Section, FSId, CallId, Props, Node]),
     {'noreply', State};
+
 handle_info({'EXIT', _, 'noconnection'}, State) ->
     {stop, {'shutdown', 'noconnection'}, State};
+
 handle_info({'EXIT', _, Reason}, State) ->
     {stop, Reason, State};
+    
 handle_info(_Other, State) ->
     lager:debug("unhandled msg: ~p", [_Other]),
     {'noreply', State}.

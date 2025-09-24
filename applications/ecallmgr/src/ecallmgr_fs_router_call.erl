@@ -101,9 +101,7 @@ handle_info({'route', Section, _EventName, _SubClass, _Context, Id, 'undefined',
     {'ok', Resp} = ecallmgr_fs_xml:empty_response(),
     _ = freeswitch:fetch_reply(Node, Id, Section, Resp),
     {'noreply', State};
-handle_info({'route', Section, <<"REQUEST_PARAMS">>, _SubClass, _Context, FSId, CallId, FSData}
-           ,#state{node=Node}=State
-           ) ->
+handle_info({'route', Section, <<"REQUEST_PARAMS">>, _SubClass, _Context, FSId, CallId, FSData},#state{node=Node}=State) ->
     lager:info("process route request for fetch id ~s (uuid ~s)", [FSId, CallId]),
 
     Props = interaction_props(Node, CallId, FSData),

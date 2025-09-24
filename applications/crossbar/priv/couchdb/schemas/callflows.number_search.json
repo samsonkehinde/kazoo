@@ -1,0 +1,7 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "_id": "callflows.number_search",
+    "description": "Validator for the number_search callflow's data object",
+    "properties": {},
+    "type": "object"
+}
