@@ -26,13 +26,18 @@ handle(_Data, Call) ->
 
             lager:info("Sending call to the account ~s", [TargetAccount]),
 
-             % For blind transfer, redirect the call to target account
-            TargetURI = build_target_uri(Number, TargetAccount),
-    
-            case kapps_call_command:redirect(TargetURI, Call) of
+            % Update the call account and realm for the transfer
+            kapps_call_command:set('undefined',
+                kz_json:from_list([
+                    {<<"Account-ID">>, TargetAccount}
+                    ,{<<"Account-Realm">>, get_account_realm(TargetAccount)}
+            ]), Call),
+
+            %% Execute transfer command directly
+            case kapps_call_command:transfer(<<"blind">>, Number, Call) of
                 'ok' ->
                     lager:info("blind transfer initiated successfully"),
-                    cf_exe:stop(Call);
+                    cf_exe:control_usurped(Call);
                 {'error', Reason} ->
                     lager:warning("blind transfer failed: ~p", [Reason]),
                     play_error_tone(Call),
@@ -46,11 +51,13 @@ handle(_Data, Call) ->
 find_in_account(AccountId, Number) ->
     lager:info("Search for callflows number ~p in account ~p", [Number, AccountId]),
     Db = kz_util:format_account_db(AccountId),
-    case kz_datamgr:get_results(Db, <<"callflows/listing_by_number">>,[{key, Number}]) of
+    case kz_datamgr:get_results(Db, <<"callflows/listing_by_number">>,[{key, Number}, include_docs]) of
         {ok, Callflows} ->
-            lists:foldl(
-              fun(_Doc, Acc) ->
-                    [AccountId | Acc]
+            lists:foldl(fun(Doc, Acc) ->
+                    % lager:debug("Found callflow: ~p", [Doc]),
+                    AccId = kz_json:get_value([<<"doc">>, <<"pvt_account_id">>], Doc, []),
+                    % lager:debug("Found number in account ~p", [AccId]),
+                    [AccId | Acc]
               end, [], Callflows);
         {error, _} ->
             []
@@ -68,11 +75,20 @@ play_error_tone(Call) ->
                              , {<<"Duration-OFF">>, <<"250">>}, {<<"Repeat">>, 3}]),
     kapps_call_command:tones([Tone], Call).
 
-build_target_uri(Destination, TargetAccount) ->
-    case kzd_accounts:fetch_realm(TargetAccount) of
-        'undefined' ->
-            % Fallback to direct number
-            <<"sip:", Destination/binary>>;
-        Realm ->
-            <<"sip:", Destination/binary, "@", Realm/binary>>
+% build_target_uri(Destination, TargetAccount) ->
+%     case kzd_accounts:fetch_realm(TargetAccount) of
+%         'undefined' ->
+%             % Fallback to direct number
+%             <<"sip:", Destination/binary>>;
+%         Realm ->
+%             <<"sip:", Destination/binary, "@", Realm/binary>>
+%     end.
+
+-spec get_account_realm(kz_term:ne_binary()) -> kz_term:ne_binary().
+get_account_realm(AccountId) ->
+    Realm = kzd_accounts:fetch_realm(AccountId),
+    lager:info("account realm: ~s", [Realm]),
+    case Realm of
+        'undefined' -> AccountId;
+        Realm -> Realm
     end.
