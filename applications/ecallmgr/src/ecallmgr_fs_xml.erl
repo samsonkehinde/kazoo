@@ -267,7 +267,7 @@ route_resp_fold(RouteJObj, {Idx, Acc}, Channel) ->
             _ -> RouteJObj
         end,
 
-    ChannelVars = get_channel_vars(kz_json:to_proplist(RouteJObj1)),
+    ChannelVars = s(kz_json:to_proplist(RouteJObj1)),
 
     BPEl = action_el(<<"set">>, [<<"bypass_media=">>, should_bypass_media(RouteJObj)]),
     HangupEl = action_el(<<"set">>, <<"hangup_after_bridge=true">>),

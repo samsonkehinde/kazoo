@@ -35,7 +35,7 @@
 handle(Data, Call) ->
     QueueId = kz_json:get_ne_binary_value(<<"id">>, Data),
     lager:info("sending call to queue ~s", [QueueId]),
-
+    lager:info("Callflow DB ~s", [kapps_call:custom_channel_var(<<"CALLFLOW_DB">>, Call)]),
     Priority = lookup_priority(Data, Call),
 
     MemberCall = props:filter_undefined(
@@ -47,6 +47,8 @@ handle(Data, Call) ->
                    ]),
 
     lager:info("loading ACDc queue: ~s", [QueueId]),
+    lager:info("Accound DB3: ~s", [kapps_call:account_db(Call)]),
+
     {'ok', QueueJObj} = kz_datamgr:open_cache_doc(kapps_call:account_db(Call), QueueId),
 
     MaxWait = max_wait(kz_json:get_integer_value(<<"connection_timeout">>, QueueJObj, 3600)),

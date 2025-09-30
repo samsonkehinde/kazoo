@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "_id": "callflows.cross_account_transfer",
+    "description": "Validator for the cross_account_transfer callflow's data object",
+    "properties": {
+        "require_auth": {
+            "boolean": "string",
+            "description": "Weather call authentication is required"
+        },
+        "timeout": {
+            "description": "Timecout in seconds for attended transfer",
+            "type": "integer"
+        },
+        "transfer_type": {
+            "description": "Type of transfer - blind or attended",
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
