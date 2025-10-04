@@ -369,7 +369,8 @@ handle_call({'should_ignore_member_call', {AccountId, QueueId, CallId}=K}, _, #s
 
 handle_call({'up_next', CallId}, _, #state{current_member_calls=Calls}=State) ->
     Position = queue_member_position(CallId, lists:reverse(Calls)),
-    {'reply', assignable_agent_count(State) >= Position, State};
+    AAC = assignable_agent_count(State),
+    {'reply', AAC >= Position, State};
 
 handle_call('config', _, #state{account_id=AccountId
                                ,queue_id=QueueId
@@ -801,11 +802,8 @@ ready_agent_count('mi', AgentL) -> length(AgentL).
 %% @end
 %%------------------------------------------------------------------------------
 -spec assignable_agent_count(mgr_state()) -> non_neg_integer().
-assignable_agent_count(#state{strategy=Strategy
-                             ,strategy_state=#strategy_state{agents=Agents
-                                                            ,ringing_agents=RingingAgents
-                                                            }
-                             }) ->
+assignable_agent_count(#state{strategy=Strategy,
+    strategy_state=#strategy_state{agents=Agents,ringing_agents=RingingAgents}}) ->
     assignable_agent_count(Strategy, Agents, RingingAgents).
 
 %%------------------------------------------------------------------------------
@@ -814,8 +812,7 @@ assignable_agent_count(#state{strategy=Strategy
 %% include ringing agents in the count to ensure maximal simultaneous ringing.
 %% @end
 %%------------------------------------------------------------------------------
--spec assignable_agent_count(queue_strategy(), queue_strategy_state(), kz_term:ne_binaries()) ->
-          non_neg_integer().
+-spec assignable_agent_count(queue_strategy(), queue_strategy_state(), kz_term:ne_binaries()) ->  non_neg_integer().
 assignable_agent_count('rr', AgentQueue, RingingAgents) ->
     ready_agent_count('rr', AgentQueue) + length(RingingAgents);
 assignable_agent_count('mi', AgentL, RingingAgents) ->
