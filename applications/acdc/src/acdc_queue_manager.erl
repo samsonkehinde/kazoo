@@ -600,9 +600,7 @@ handle_cast({'add_queue_member', JObj}, #state{account_id=AccountId
                                  AnnouncementsPids#{CallId => Pid}
                          end,
 
-    {'noreply', State#state{current_member_calls=[Call | Calls]
-                           ,announcements_pids=AnnouncementsPids1
-                           }};
+    {'noreply', State#state{current_member_calls=[Call | Calls],announcements_pids=AnnouncementsPids1}};
 
 handle_cast({'handle_queue_member_add', JObj}, #state{current_member_calls=CurrentCalls}=State) ->
     Call = kapps_call:from_json(kz_json:get_value(<<"Call">>, JObj)),

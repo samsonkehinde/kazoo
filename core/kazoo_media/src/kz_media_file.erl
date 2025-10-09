@@ -60,7 +60,7 @@ start_media_file_cache(Db, Id, Attachment) ->
 
 -spec maybe_proxy(kz_json:object(), media_store_path()) ->
           kz_term:ne_binary() | {'error', 'no_stream_strategy'}.
-maybe_proxy(JObj, #media_store_path{db = Db
+kz_media_file(JObj, #media_store_path{db = Db
                                    ,id = Id
                                    ,att = Attachment
                                    ,opt = Options

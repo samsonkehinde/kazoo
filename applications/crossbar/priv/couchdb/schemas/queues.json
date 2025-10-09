@@ -46,13 +46,18 @@
                         "you_are_at_position": {
                             "description": "Played before the numeric position",
                             "type": "string"
+                        },
+                        "intro": {
+                            "description": "Played to introduce a caller to the queue.",
+                            "type": "string"
                         }
                     },
                     "required": [
                         "in_the_queue",
                         "increase_in_call_volume",
                         "the_estimated_wait_time_is",
-                        "you_are_at_position"
+                        "you_are_at_position",
+                        "intro"
                     ],
                     "type": "object"
                 },

@@ -39,6 +39,19 @@ init(Manager, Call, Props) ->
     kapps_call:put_callid(Call),
     Config = get_config(Props),
     State = init_state(Manager, Call, Config),
+
+    %% Play Call-Center Intro Here
+    Intro = announcements_media_file(<<"intro">>, Config),
+    lager:debug("Into File: ~s", [Intro]),
+    case Intro of
+        'undefined' -> ok;
+        IntroMediaFile ->
+            Language = kapps_call:language(Call),
+            kapps_call_command:audio_macro([{'prompt', IntroMediaFile, Language, <<"A">>}], Call)
+            % AnnouncementsInterval = announcements_interval(Config),
+            % timer:sleep(AnnouncementsInterval * ?MILLISECONDS_IN_SECOND)
+    end,
+
     loop(State).
 
 %%%=============================================================================
